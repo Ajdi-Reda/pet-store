@@ -1,11 +1,10 @@
 import {
-  Tag,
   Users,
   Settings,
-  Bookmark,
-  SquarePen,
   LayoutGrid,
-  LucideIcon
+  LucideIcon,
+  ShoppingCart,
+  ListOrdered,
 } from "lucide-react";
 
 type Submenu = {
@@ -37,42 +36,42 @@ export function getMenuList(pathname: string): Group[] {
           label: "Dashboard",
           active: pathname.includes("/dashboard"),
           icon: LayoutGrid,
-          submenus: []
-        }
-      ]
+          submenus: [],
+        },
+      ],
     },
     {
       groupLabel: "Contents",
       menus: [
         {
-          href: "",
-          label: "Posts",
-          active: pathname.includes("/posts"),
-          icon: SquarePen,
-          submenus: [
-            {
-              href: "/posts",
-              label: "All Posts"
-            },
-            {
-              href: "/posts/new",
-              label: "New Post"
-            }
-          ]
+          href: "/app/products",
+          label: "Products",
+          active: pathname.includes("/app/products"),
+          icon: ShoppingCart,
+          // submenus: [
+          //   {
+          //     href: "/posts",
+          //     label: "All Posts"
+          //   },
+          //   {
+          //     href: "/posts/new",
+          //     label: "New Post"
+          //   }
+          // ]
         },
         {
-          href: "/categories",
-          label: "Categories",
-          active: pathname.includes("/categories"),
-          icon: Bookmark
+          href: "/app/orders",
+          label: "Orders",
+          active: pathname.includes("/app/orders"),
+          icon: ListOrdered,
         },
-        {
-          href: "/tags",
-          label: "Tags",
-          active: pathname.includes("/tags"),
-          icon: Tag
-        }
-      ]
+        // {
+        //   href: "/tags",
+        //   label: "Tags",
+        //   active: pathname.includes("/tags"),
+        //   icon: Tag,
+        // },
+      ],
     },
     {
       groupLabel: "Settings",
@@ -81,15 +80,15 @@ export function getMenuList(pathname: string): Group[] {
           href: "/users",
           label: "Users",
           active: pathname.includes("/users"),
-          icon: Users
+          icon: Users,
         },
         {
           href: "/account",
           label: "Account",
           active: pathname.includes("/account"),
-          icon: Settings
-        }
-      ]
-    }
+          icon: Settings,
+        },
+      ],
+    },
   ];
 }
