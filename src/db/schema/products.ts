@@ -1,48 +1,53 @@
-import {
-  mysqlTable,
-  serial,
-  varchar,
-  int,
-  decimal,
-  text,
-  timestamp,
-} from "drizzle-orm/mysql-core";
+import { mysqlTable, varchar, int, text, double } from "drizzle-orm/mysql-core";
 import { categories } from "./categories";
-import { relations } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 import { reviews } from "./reviews";
-import { order_items } from "./order-items";
+import { orderItems } from "./order-items";
 import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod"; // Ensure to import zod
+import { z } from "zod";
+import { timestamps } from "../columns/helpers";
 
 export const products = mysqlTable("products", {
-  id: serial("id").primaryKey(),
+  id: int("id").primaryKey().autoincrement(),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
-  category_id: int("category_id")
+  categoryId: int("category_id")
     .references(() => categories.id)
     .notNull(),
-  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  price: double("price", { precision: 10, scale: 2 }).notNull(),
   stock: int("stock").default(0),
-  image_url: varchar("image_url", { length: 255 }),
-  created_at: timestamp("created_at").defaultNow(),
-  updated_at: timestamp("updated_at").defaultNow().onUpdateNow(),
+  imageUrl: varchar("image_url", { length: 255 }),
+  ...timestamps,
 });
 
 export const productsRelations = relations(products, ({ many, one }) => ({
-  orderItems: many(order_items),
+  orderItems: many(orderItems),
   reviews: many(reviews),
   category: one(categories, {
-    fields: [products.category_id],
+    fields: [products.categoryId],
     references: [categories.id],
   }),
 }));
 
-export const insertProductSchema = createInsertSchema(products, {
-  name: (schema) => schema.name.min(1).max(255), // Ensure name is between 1 and 255 characters
-  description: (schema) => schema.description.min(1).max(255), // Ensure description is between 1 and 255 characters
-  price: (schema) => schema.price, // Coerce price to a number and ensure it's non-negative
-  stock: (schema) => schema.stock.int().nonnegative(), // Ensure stock is a non-negative integer
+export const productSchema = createInsertSchema(products, {
+  name: (schema) =>
+    schema.name
+      .min(1, { message: "Product name cannot be empty." })
+      .max(255, { message: "Product name cannot exceed 255 characters." }),
+  description: (schema) =>
+    schema.description
+      .min(1, { message: "Product description cannot be empty." })
+      .max(255, {
+        message: "Product description cannot exceed 255 characters.",
+      }),
+  categoryId: z.coerce.number({ message: "Please select a valid category." }),
+  price: z.coerce
+    .number()
+    .nonnegative({ message: "Price must be a positive value." }),
+  stock: z.coerce
+    .number()
+    .nonnegative({ message: "Stock cannot be negative." }),
 });
 
-// Optionally, you can define a type for the validated product data
-export type InsertProductSchema = z.infer<typeof insertProductSchema>;
+export type InsertProductSchema = z.infer<typeof productSchema>;
+export type selectProduct = InferSelectModel<typeof products>;

@@ -1,4 +1,3 @@
-// db/tables/reviews.ts
 import {
   mysqlTable,
   serial,
@@ -14,31 +13,31 @@ import { z } from "zod";
 
 export const reviews = mysqlTable("reviews", {
   id: serial("id").primaryKey(),
-  customer_id: int("customer_id")
+  customerId: int("customer_id")
     .references(() => customers.id)
     .notNull(),
-  product_id: int("product_id")
+  productId: int("product_id")
     .references(() => products.id)
     .notNull(),
   rating: int("rating").notNull(),
   comment: text("comment"),
-  created_at: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const reviewsRelations = relations(reviews, ({ one }) => ({
   customer: one(customers, {
-    fields: [reviews.customer_id],
+    fields: [reviews.customerId],
     references: [customers.id],
   }),
   product: one(products, {
-    fields: [reviews.product_id],
+    fields: [reviews.productId],
     references: [products.id],
   }),
 }));
 
 export const insertReviewSchema = createInsertSchema(reviews, {
-  customer_id: (schema) => schema.customer_id.positive(),
-  product_id: (schema) => schema.product_id.positive(),
+  customerId: (schema) => schema.customerId.positive(),
+  productId: (schema) => schema.productId.positive(),
   rating: (schema) => schema.rating.min(1).max(5),
   comment: (schema) => schema.comment.max(1000).optional(),
 });

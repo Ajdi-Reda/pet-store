@@ -1,15 +1,73 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "9a3d0342-8cf5-42f3-93ff-7c9e0c18cd67",
+  "id": "eeaae855-c185-4290-9f2a-f398133a7da0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
+    "categories_products": {
+      "name": "categories_products",
+      "columns": {
+        "category_id": {
+          "name": "category_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "categories_products_category_id_categories_id_fk": {
+          "name": "categories_products_category_id_categories_id_fk",
+          "tableFrom": "categories_products",
+          "tableTo": "categories",
+          "columnsFrom": [
+            "category_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "categories_products_product_id_products_id_fk": {
+          "name": "categories_products_product_id_products_id_fk",
+          "tableFrom": "categories_products",
+          "tableTo": "products",
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "categories_products_category_id_product_id_pk": {
+          "name": "categories_products_category_id_product_id_pk",
+          "columns": [
+            "category_id",
+            "product_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
     "categories": {
       "name": "categories",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "int",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
@@ -56,7 +114,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "int",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
@@ -166,14 +224,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "int",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
         },
         "order_id": {
           "name": "order_id",
-          "type": "bigint",
+          "type": "int",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -244,7 +302,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "int",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
@@ -311,7 +369,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "int",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
@@ -339,7 +397,7 @@
         },
         "price": {
           "name": "price",
-          "type": "decimal(10,2)",
+          "type": "double(2)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -363,18 +421,18 @@
           "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false,
-          "default": "(now())"
+          "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false,
           "onUpdate": true,
-          "default": "(now())"
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -494,7 +552,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "int",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
@@ -515,11 +573,11 @@
         },
         "role": {
           "name": "role",
-          "type": "varchar(50)",
+          "type": "enum('ADMIN','BASIC')",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'customer'"
+          "default": "'BASIC'"
         },
         "created_at": {
           "name": "created_at",

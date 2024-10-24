@@ -1,14 +1,14 @@
 import { z } from "zod";
-import { mysqlTable, serial, varchar, timestamp } from "drizzle-orm/mysql-core";
+import { mysqlTable, varchar, timestamp, int } from "drizzle-orm/mysql-core";
 import { createInsertSchema } from "drizzle-zod";
-import { relations } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 import { products } from "./products";
 
 export const categories = mysqlTable("categories", {
-  id: serial("id").primaryKey(),
+  id: int("id").primaryKey().autoincrement(),
   name: varchar("name", { length: 100 }).notNull(),
-  created_at: timestamp("created_at").defaultNow(),
-  updated_at: timestamp("updated_at").defaultNow().onUpdateNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow(),
 });
 
 export const categoriesRelations = relations(categories, ({ many }) => ({
@@ -21,3 +21,4 @@ export const insertCategorySchema = createInsertSchema(categories, {
 });
 
 export type InsertCategorySchema = z.infer<typeof insertCategorySchema>;
+export type SelectCategory = InferSelectModel<typeof categories>;

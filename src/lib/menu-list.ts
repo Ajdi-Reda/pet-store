@@ -32,7 +32,7 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "",
       menus: [
         {
-          href: "/dashboard",
+          href: "/app/dashboard",
           label: "Dashboard",
           active: pathname.includes("/dashboard"),
           icon: LayoutGrid,

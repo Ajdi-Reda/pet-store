@@ -1,8 +1,17 @@
-import "dotenv/config";
-import { drizzle } from "drizzle-orm/connect";
+import { drizzle } from "drizzle-orm/mysql2";
+import mysql from "mysql2/promise";
 
-async function main() {
-  const db = await drizzle("mysql2", process.env.DATABASE_URL);
-}
+import * as schema from "@/db/schema";
 
-main();
+const poolConnection = mysql.createPool({
+  host: "localhost",
+  user: "root",
+  database: "pet-store",
+});
+
+export const db = drizzle(poolConnection, {
+  schema,
+  mode: "default",
+  logger: true,
+});
+export type DB = typeof db;
